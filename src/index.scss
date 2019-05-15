@@ -1,0 +1,22 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import "~bootstrap/dist/css/bootstrap.css";
+
+.card {
+    position: relative;
+    cursor: pointer;
+
+    .qr-code {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 130px !important;
+            height: 130px !important;
+            transform: translate(-50%, -80%);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        color: #333;
+        text-align: center
+    }
+}
