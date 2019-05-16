@@ -3,16 +3,21 @@ import QRCode from 'qrcode.react';
 import img from '../assets/img.png';
 import domtoimage from 'dom-to-image';
 
-const List = ({ arr }) => {
+const List = ({ arr, setLoading }) => {
 
+    function filter(node) {
+        return (node.tagName !== 'i');
+    }
     const handleDownload = item => {
-        domtoimage.toJpeg(document.getElementById(item), { quality: 1 })
+        setLoading(true);
+        domtoimage.toSvg(document.getElementById(item), { filter: filter })
             .then(function (dataUrl) {
+                // data:image/svg+xml;charset=utf-8,
                 var link = document.createElement('a');
-                link.download = `${item}.jpeg`;
+                link.download = `${item}.svg`;
                 link.href = dataUrl;
                 link.click();
-                console.log(dataUrl)
+                setLoading(false)
             });
     }
 

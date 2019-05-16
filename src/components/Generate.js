@@ -1,13 +1,12 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import uuidv1 from 'uuid/v1';
 import domtoimage from 'dom-to-image';
 import saveAs from 'file-saver';
 import jszip from 'jszip';
 
-const Generate = ({ arr, setArr }) => {
+const Generate = ({ arr, setArr, setLoading }) => {
 
     const inputRef = useRef(null);
-    const [loading, setLoading] = useState(false);
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -20,16 +19,19 @@ const Generate = ({ arr, setArr }) => {
         }
     }
 
+    function filter(node) {
+        return (node.tagName !== 'i');
+    }
+
     const handleSaveAll = () => {
 
         setLoading(true);
         let zip = new jszip();
         arr.map((item, index) => {
-            return domtoimage.toJpeg(document.getElementById(item), { quality: 1 })
+            return domtoimage.toSvg(document.getElementById(item), { filter: filter })
                 .then(function (dataUrl) {
 
-                    zip.file(`${item}.jpeg`, dataUrl.replace("data:image/jpeg;base64,", ""),
-                        { base64: true });
+                    zip.file(`${item}.svg`, dataUrl.replace("data:image/svg+xml;charset=utf-8,", ""));
 
                     if (index >= arr.length - 1) {
                         zip.generateAsync({ type: "blob" })
@@ -46,7 +48,7 @@ const Generate = ({ arr, setArr }) => {
     return (
         <article className="container">
             <section className="row">
-                <h1 className="display-3 mx-auto my-3">Enter Number</h1>
+                <h1 className="title">Enter Number</h1>
             </section>
             <section className="row">
                 <form className="col-12 col-lg-8 mx-auto d-flex" onSubmit={handleSubmit}>
@@ -59,7 +61,7 @@ const Generate = ({ arr, setArr }) => {
             {arr.length >= 1 && <section className="row flex-column align-items-center">
                 <p className="text-muted">{arr.length} QR Generated</p>
                 <div className="col-lg-8 mb-3">
-                    <button className="btn btn-danger btn-block" onClick={handleSaveAll}>{loading ? <span className="spinner-border text-light"></span> : ''} Save</button>
+                    <button className="btn btn-danger btn-block" onClick={handleSaveAll}>Save</button>
                 </div>
             </section>}
         </article>
